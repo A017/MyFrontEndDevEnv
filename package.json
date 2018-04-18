@@ -1,0 +1,23 @@
+{
+  "name": "environment",
+  "version": "1.0.0",
+  "description": "my front end development environment",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/A017/MyFrontEndDevEnv.git"
+  },
+  "keywords": [
+    "gulp",
+    "webpack"
+  ],
+  "author": "Songsong_Yu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/A017/MyFrontEndDevEnv/issues"
+  },
+  "homepage": "https://github.com/A017/MyFrontEndDevEnv#readme"
+}
