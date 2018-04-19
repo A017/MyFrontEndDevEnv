@@ -180,9 +180,9 @@ gulp.task('clean', function (done) {
 //监控文件变化
 gulp.task('watch', function (done) {
     //监听所有文件，变化之后运行数组中的任务
-    gulp.watch('src/**/*', ['gulpimportcss', 'gulpless','gulpsass', 'cssmin', 'fileinclude', 'html', 'copy:images', 'build-js'])
+    gulp.watch('src/**/*', ['gulpimportcss', 'gulpless','gulpsass', 'cssmin', 'fileinclude', 'html', 'imagemin', 'build-js'])
         .on('end', done)
 });
 
 //编排任务，避免每个任务需要单独运行
-gulp.task('dev', ['connect', 'fileinclude', 'html', 'gulpimportcss', 'gulpless', 'gulpsass', 'cssmin', 'copy:images', 'watch', 'open', 'build-js']);
+gulp.task('dev', ['connect', 'fileinclude', 'html', 'gulpimportcss', 'gulpless', 'gulpsass', 'cssmin', 'imagemin', 'watch', 'open', 'build-js']);
