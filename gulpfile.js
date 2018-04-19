@@ -18,6 +18,7 @@ var gulp = require('gulp'),
     gulpimportjs = require('gulp-js-import'),
     rename = require('gulp-rename'),
     imagemin = require('gulp-imagemin'),
+    autoprefixer = require('gulp-autoprefixer'), //根据设置浏览器版本自动处理浏览器前缀
 
     webpack = require('webpack'),
     webpackConfig = require('./webpack.config.js'),

@@ -26,6 +26,7 @@
     "babel-preset-react": "^6.24.1",
     "css-loader": "^0.28.11",
     "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^5.0.0",
     "gulp-clean": "^0.4.0",
     "gulp-concat": "^2.6.1",
     "gulp-connect": "^5.5.0",
