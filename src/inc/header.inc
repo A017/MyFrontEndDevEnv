@@ -1,3 +1,3 @@
 <header>
-    <div class="banner"></div>
+    <div class="banner">@@title</div>
 </header>
