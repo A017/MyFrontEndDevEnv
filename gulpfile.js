@@ -36,7 +36,7 @@ var host = {
 
 var incHtmlSrc = 'src/**/*.html', incHtmlDist = 'dist/';
 var htmlSrc = 'src/views/**/*.html', htmlDist = 'dist/views/';
-var imagesSrc = 'src/images/*', imagesDist = 'dist/images/';
+var imagesSrc = 'src/images/*.{png,jpg,gif,ico}', imagesDist = 'dist/images/';
 var lessSrc = 'src/less/**/*.less';
 var scssSrc = 'src/scss/**/*.scss';
 var lessScssToCssSrc = 'src/css/';
@@ -53,7 +53,7 @@ gulp.task('fileinclude', function(done) {
         .pipe(gulp.dest(incHtmlDist))
         .pipe(notify({ message: 'html task complete' }))
         .pipe(connect.reload())
-        .on('end', done);
+        // .on('end', done);
 });
 
 //拷贝html
@@ -61,7 +61,7 @@ gulp.task('copy:html', function (done) {
     return gulp.src([htmlSrc])
         .pipe(gulp.dest(htmlDist))
         .pipe(connect.reload())
-        .on('end', done);
+        // .on('end', done);
 });
 
 //拷贝图片
@@ -69,12 +69,12 @@ gulp.task('copy:images', function (done) {
     return gulp.src([imagesSrc])
         .pipe(gulp.dest(imagesDist))
         .pipe(connect.reload())
-        .on('end', done)
+        // .on('end', done)
 });
 
 //压缩图片--(先压缩后复制)
 gulp.task('imagemin', function (done) {
-    return gulp.src([imagesSrc])
+    gulp.src('src/images/*.{png,jpg,gif,ico}')
         .pipe(imagemin())
         .pipe(gulp.dest(imagesDist))
         .pipe(connect.reload())
@@ -91,7 +91,7 @@ gulp.task('gulpless', function (done) {
         .pipe(sourcemaps.write('../../../sourcemaps/lessmaps/'))
         .pipe(gulp.dest(lessScssToCssSrc))
         .pipe(connect.reload())
-        .on('end', done)
+        // .on('end', done)
 });
 
 //编译scss
@@ -104,7 +104,7 @@ gulp.task('gulpsass', function (done) {
         .pipe(sourcemaps.write('../../../sourcemaps/scssmaps/'))
         .pipe(gulp.dest(lessScssToCssSrc))
         .pipe(connect.reload())
-        .on('end', done)
+        // .on('end', done)
 });
 
 //合并、压缩css代码
@@ -112,21 +112,22 @@ gulp.task('cssmin', function (done) {
     return gulp.src([cssSrc])
         .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
         .pipe(sourcemaps.init())
-        .pipe(concat('style.min.css'))
+        .pipe(rename({ suffix: '.min' }))
+        // .pipe(concat('style.min.css')) //生成一个压缩的css
         .pipe(cssmin())  //兼容IE7及以下需设置compatibility属性 .pipe(cssmin({compatibility: 'ie7'}))
         .pipe(sourcemaps.write('../../../sourcemaps/cssminmaps/'))
         .pipe(gulp.dest(cssDist))
         .pipe(connect.reload())
-        .on('end', done)
+        // .on('end', done)
 });
 
 //编译@import css
 gulp.task('gulpimportcss', function (done) {
-    return gulp.src(['src/css/importCss.css'])
+    return gulp.src(['src/css/*.css'])
         .pipe(gulpimportcss())
         .pipe(gulp.dest('src/css/'))
         .pipe(connect.reload())
-        .on('end', done)
+        // .on('end', done)
 });
 
 //编译@import js
@@ -136,23 +137,23 @@ gulp.task('gulpimportjs', function() {
         .pipe(gulpimportjs({hideConsole: true}))
         .pipe(gulp.dest(imporJsDest))
         .pipe(connect.reload())
-        .on('end', done)
+        // .on('end', done)
 });
 */
 
 //调用webpack编译js
-/*gulp.task('build-js', function (done) {
- gulp.src(jsSrc) //输入主js文件
- .pipe(gulpwebpack(webpackConfig, webpack))
- .pipe(gulp.dest(jsDist))
- .pipe(connect.reload())
- .on('end', done)
- });*/
-gulp.task('build-js', function(callback) {
-    return gulp.src('AppSrc/entry.js')
-        .pipe(gulpwebpack( require('./webpack.config.js')))
-        .pipe(gulp.dest(jsDist));
-});
+gulp.task('build-js', function (done) {
+    return gulp.src('src/entry.js')
+        .pipe(gulpwebpack(webpackConfig))
+        .pipe(gulp.dest('dist/js'))
+        .pipe(connect.reload())
+        // .on('end', done)
+ });
+/*gulp.task('build-js', function(callback) {
+    return gulp.src('src/entry.js')
+        .pipe(gulpwebpack(require('./webpack.config.js')))
+        .pipe(gulp.dest('dist/js'));
+});*/
 
 //运行web服务器
 gulp.task('connect', function (done) {
@@ -176,7 +177,7 @@ gulp.task('open', function (done) {
 
 //清除
 gulp.task('clean', function (done) {
-    gulp.src(['dist', 'sourcemaps', sourceFileName+'/sourcemaps'])
+    gulp.src(['dist', 'sourcemaps', 'src/sourcemaps'])
         .pipe(clean())
         .on('end', done)
 });
@@ -184,9 +185,9 @@ gulp.task('clean', function (done) {
 //监控文件变化
 gulp.task('watch', function (done) {
     //监听所有文件，变化之后运行数组中的任务
-    gulp.watch('src/**/*', ['gulpimportcss', 'gulpless','gulpsass', 'cssmin', 'fileinclude', 'copy:html', 'imagemin', 'build-js'])
+    gulp.watch('src/**/*', ['fileinclude', 'copy:images', 'gulpless','gulpsass', 'gulpimportcss', 'cssmin', 'build-js'])
         .on('end', done)
 });
 
 //编排任务，避免每个任务需要单独运行
-gulp.task('dev', ['connect', 'fileinclude', 'copy:html', 'gulpimportcss', 'gulpless', 'gulpsass', 'cssmin', 'imagemin', 'build-js', 'watch', 'open']);
+gulp.task('dev', ['fileinclude', 'copy:images', 'gulpless', 'gulpsass', 'gulpimportcss', 'cssmin', 'build-js', 'watch', 'connect', 'open']);
