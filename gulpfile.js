@@ -84,6 +84,7 @@ gulp.task('imagemin', function (done) {
 //编译less(匹配符“!除了..”，“*”，“**匹配路径下的0个或多个子文件夹”，“{}”)
 gulp.task('gulpless', function (done) {
     return gulp.src(lessSrc)
+        .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')}))
         .pipe(sourcemaps.init())
         .pipe(gulpless())
@@ -96,6 +97,7 @@ gulp.task('gulpless', function (done) {
 //编译scss
 gulp.task('gulpsass', function (done) {
     return gulp.src(scssSrc)
+        .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')}))
         .pipe(sourcemaps.init())
         .pipe(gulpsass())
@@ -108,6 +110,7 @@ gulp.task('gulpsass', function (done) {
 //合并、压缩css代码
 gulp.task('cssmin', function (done) {
     return gulp.src([cssSrc])
+        .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
         .pipe(sourcemaps.init())
         .pipe(concat('style.min.css'))
         .pipe(cssmin())  //兼容IE7及以下需设置compatibility属性 .pipe(cssmin({compatibility: 'ie7'}))
@@ -181,9 +184,9 @@ gulp.task('clean', function (done) {
 //监控文件变化
 gulp.task('watch', function (done) {
     //监听所有文件，变化之后运行数组中的任务
-    gulp.watch('src/**/*', ['gulpimportcss', 'gulpless','gulpsass', 'cssmin', 'fileinclude', 'html', 'imagemin', 'build-js'])
+    gulp.watch('src/**/*', ['gulpimportcss', 'gulpless','gulpsass', 'cssmin', 'fileinclude', 'copy:html', 'imagemin', 'build-js'])
         .on('end', done)
 });
 
 //编排任务，避免每个任务需要单独运行
-gulp.task('dev', ['connect', 'fileinclude', 'html', 'gulpimportcss', 'gulpless', 'gulpsass', 'cssmin', 'imagemin', 'watch', 'open', 'build-js']);
+gulp.task('dev', ['connect', 'fileinclude', 'copy:html', 'gulpimportcss', 'gulpless', 'gulpsass', 'cssmin', 'imagemin', 'build-js', 'watch', 'open']);
