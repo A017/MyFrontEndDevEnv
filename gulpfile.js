@@ -19,6 +19,7 @@ var gulp = require('gulp'),
     rename = require('gulp-rename'),
     imagemin = require('gulp-imagemin'),
     autoprefixer = require('gulp-autoprefixer'), //根据设置浏览器版本自动处理浏览器前缀
+    sequence = require('gulp-sequence'), //用于同步执行task
 
     webpack = require('webpack'),
     webpackConfig = require('./webpack.config.js'),
@@ -190,4 +191,8 @@ gulp.task('watch', function (done) {
 });
 
 //编排任务，避免每个任务需要单独运行
-gulp.task('dev', ['connect', 'fileinclude', 'copy:images', 'gulpless', 'gulpsass', 'gulpimportcss', 'cssmin', 'build-js', 'watch', 'open']);
+// gulp.task('dev', ['connect', 'fileinclude', 'copy:images', 'gulpless', 'gulpsass', 'gulpimportcss', 'cssmin', 'build-js', 'watch', 'open']);
+gulp.task('dev', sequence('fileinclude', 'copy:images', 'gulpless', 'gulpsass', 'gulpimportcss', 'cssmin', 'build-js', 'watch', 'connect', 'open'));
+
+//同步执行task测试
+gulp.task('sequence', sequence('gulpless', 'gulpsass', 'gulpimportcss', 'cssmin'));
