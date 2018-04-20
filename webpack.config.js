@@ -14,9 +14,9 @@ module.exports = {
         filename: '[name].js'
     },
     devtool:'source-map',
-
+    mode:'development', //这个参数有两个值： 'development'或者 'production'，一个是开发环境，一个是生产环境。
     module: {
-        loaders: [{
+        rules: [{
             test: /\.js$/,
             exclude: /(node_modules)/,
             loader: 'babel-loader',
@@ -29,10 +29,10 @@ module.exports = {
 
     plugins: [
 
-        new webpack.ProvidePlugin({
+       /* new webpack.ProvidePlugin({
             $: 'jquery',
             jQuery: 'jquery'
-        }),//直接定义第三方库
+        }),//直接定义第三方库*/
 
       /*  new CommonsChunkPlugin({ // webpack4之前版本的写法(webpack1.xx)
             name: "commons",
