@@ -170,7 +170,7 @@ gulp.task('open', function (done) {
     gulp.src('')
         .pipe(gulpopen({
             app: browser,
-            uri: 'http://localhost:' + host.port + host.html
+            uri: 'http://localhost:' + host.port+ '/' + host.html
         }))
         .on('end', done)
 });
@@ -190,4 +190,4 @@ gulp.task('watch', function (done) {
 });
 
 //编排任务，避免每个任务需要单独运行
-gulp.task('dev', ['fileinclude', 'copy:images', 'gulpless', 'gulpsass', 'gulpimportcss', 'cssmin', 'build-js', 'watch', 'connect', 'open']);
+gulp.task('dev', ['connect', 'fileinclude', 'copy:images', 'gulpless', 'gulpsass', 'gulpimportcss', 'cssmin', 'build-js', 'watch', 'open']);
