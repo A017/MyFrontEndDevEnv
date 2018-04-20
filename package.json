@@ -46,7 +46,7 @@
     "os": "^0.1.1",
     "style-loader": "^0.21.0",
     "vue": "^2.5.16",
-    "webpack": "^4.4.1"
+    "webpack": "^4.6.0"
   },
   "bugs": {
     "url": "https://github.com/A017/MyFrontEndDevEnv/issues"
