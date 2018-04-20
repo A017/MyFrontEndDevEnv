@@ -4,8 +4,9 @@
   "description": "my front end development environment",
   "main": "index.js",
   "scripts": {
-    "test": "gulp dev",
-    "clean": "gulp clean"
+    "clean": "gulp clean",
+    "build": "gulp build",
+    "test": "gulp dev"
   },
   "repository": {
     "type": "git",
