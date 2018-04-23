@@ -120,7 +120,7 @@ gulp.task('gulpsass', function (done) {
 });
 
 //合并、压缩css代码
-gulp.task('cssmin', function (done) {
+gulp.task('cssmin', ['importcss'], function (done) {
     return gulp.src([cssSrc])
         .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
         .pipe(sourcemaps.init())
@@ -141,7 +141,7 @@ gulp.task('gulpimportcss', function (done) {
         .pipe(connect.reload())
         // .on('end', done)
 });
-gulp.task('importcss', function () {
+gulp.task('importcss', ['gulpless', 'gulpsass'], function () {
     return gulp.src(['src/css/*.css'])
         .pipe (importcss ({
             rootPath : 'src',
@@ -187,7 +187,7 @@ gulp.task('connect', function (done) {
 });
 
 //自动打开浏览器
-gulp.task('open', function (done) {
+gulp.task('open', ['connect'], function (done) {
     gulp.src('')
         .pipe(gulpopen({
             app: browser,
@@ -198,7 +198,7 @@ gulp.task('open', function (done) {
 
 //清除
 gulp.task('clean', function (done) {
-    gulp.src(['dist', 'sourcemaps', 'src/sourcemaps'])
+    gulp.src(['dist', 'sourcemaps', 'src/sourcemaps', 'src/css/*.css'])
         .pipe(clean())
         .on('end', done)
 });
@@ -206,14 +206,13 @@ gulp.task('clean', function (done) {
 //监控文件变化
 gulp.task('watch', function (done) {
     //监听所有文件，变化之后运行数组中的任务
-    gulp.watch('src/**/*', ['fileinclude', 'copy:images', 'copy:fonts', 'gulpless','gulpsass', 'importcss', 'cssmin', 'build-js'])
-        .on('end', done)
+    gulp.watch('src/**/*', ['fileinclude', 'copy:images', 'copy:fonts', 'cssmin', 'build-js'])
 });
 
 //编排任务，避免每个任务需要单独运行
-// gulp.task('dev', ['connect', 'fileinclude', 'copy:images', 'gulpless', 'gulpsass', 'gulpimportcss', 'cssmin', 'build-js', 'watch', 'open']);
-gulp.task('build', sequence('fileinclude', 'copy:images', 'copy:fonts', 'gulpless', 'gulpsass', 'importcss', 'cssmin', 'build-js'));
-gulp.task('dev',['connect', 'open', 'watch']);
+gulp.task('dev', ['fileinclude', 'copy:images', 'copy:fonts', 'cssmin', 'build-js', 'watch', 'open']);
+// gulp.task('build', sequence('fileinclude', 'copy:images', 'copy:fonts', 'gulpless', 'gulpsass', 'importcss', 'cssmin', 'build-js'));
+// gulp.task('dev',['watch', 'connect', 'open']);
 
 //同步执行task测试
 gulp.task('sequence', sequence('gulpless', 'gulpsass', 'importcss', 'cssmin'));
