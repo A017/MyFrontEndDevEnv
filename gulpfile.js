@@ -25,6 +25,8 @@ var gulp = require('gulp'),
     webpackConfig = require('./webpack.config.js'),
     gulpwebpack = require('gulp-webpack');
 
+var webpackStream = require('webpack-stream');
+
 //开发环境的检测兼容 darwin(Mac)
 var browser = os.platform() === 'linux' ? 'google-chrome' : (
                 os.platform() === 'darwin' ? 'google chrome' : (
@@ -145,7 +147,7 @@ gulp.task('gulpimportjs', function() {
 //调用webpack编译js
 gulp.task('build-js', function (done) {
     return gulp.src('src/entry.js')
-        .pipe(gulpwebpack(webpackConfig))
+        .pipe(webpackStream(webpackConfig))
         .pipe(gulp.dest('dist/js'))
         .pipe(connect.reload())
         // .on('end', done)

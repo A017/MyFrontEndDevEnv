@@ -14,7 +14,7 @@ module.exports = {
         filename: '[name].js'
     },
     devtool:'source-map',
-    mode:'development', //这个参数有两个值： 'development'或者 'production'，一个是开发环境，一个是生产环境。
+    // mode:'development', //这个参数有两个值： 'development'或者 'production'，一个是开发环境，一个是生产环境。
     module: {
         rules: [{
             test: /\.js$/,
