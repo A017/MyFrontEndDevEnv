@@ -1,7 +1,7 @@
 /**
  * Created by Songsong_yu on 2018/4/19.
  */
-var gulp = require('gulp'),
+const gulp = require('gulp'),
     fileinclude = require('gulp-file-include'), //合并公共html代码（例如header和footer）
     clean = require('gulp-clean'), //清除
     concat = require('gulp-concat'), //合并压缩css，js所需插件
@@ -25,25 +25,26 @@ var gulp = require('gulp'),
     webpackConfig = require('./webpack.config.js'),
     gulpwebpack = require('gulp-webpack');
 
-var webpackStream = require('webpack-stream');
+const webpackStream = require('webpack-stream');
+const importcss = require('gulp-concat-css-import');
 
 //开发环境的检测兼容 darwin(Mac)
-var browser = os.platform() === 'linux' ? 'google-chrome' : (
+const browser = os.platform() === 'linux' ? 'google-chrome' : (
                 os.platform() === 'darwin' ? 'google chrome' : (
                     os.platform() === 'win32' ? 'chrome' : 'firefox'));
-var host = {
+const host = {
     path: 'dist/', //dist部署的文件根路径
     port: 3090,
     html: 'index.html'
 };
 
-var incHtmlSrc = 'src/**/*.html', incHtmlDist = 'dist/';
-var htmlSrc = 'src/views/**/*.html', htmlDist = 'dist/views/';
-var imagesSrc = 'src/images/*.{png,jpg,gif,ico}', imagesDist = 'dist/images/';
-var lessSrc = 'src/less/**/*.less';
-var scssSrc = 'src/scss/**/*.scss';
-var lessScssToCssSrc = 'src/css/';
-var cssSrc = 'src/css/**/*.css', cssDist = 'dist/css/';
+const incHtmlSrc = 'src/**/*.html', incHtmlDist = 'dist/';
+const htmlSrc = 'src/views/**/*.html', htmlDist = 'dist/views/';
+const imagesSrc = 'src/images/**/*.{png,jpg,gif,ico}', imagesDist = 'dist/images/';
+const lessSrc = 'src/less/**/*.less';
+const scssSrc = 'src/scss/**/*.scss';
+const lessScssToCssSrc = 'src/css/';
+const cssSrc = 'src/css/**/*.css', cssDist = 'dist/css/';
 
 
 //合并HTML
@@ -65,6 +66,14 @@ gulp.task('copy:html', function (done) {
         .pipe(gulp.dest(htmlDist))
         .pipe(connect.reload())
         // .on('end', done);
+});
+
+//拷贝fonts
+gulp.task('copy:fonts', function (done) {
+    return gulp.src(['src/css/fonts/*'])
+        .pipe(gulp.dest('dist/css/fonts/'))
+        .pipe(connect.reload())
+    // .on('end', done);
 });
 
 //拷贝图片
@@ -132,6 +141,15 @@ gulp.task('gulpimportcss', function (done) {
         .pipe(connect.reload())
         // .on('end', done)
 });
+gulp.task('importcss', function () {
+    return gulp.src(['src/css/*.css'])
+        .pipe (importcss ({
+            rootPath : 'src',
+            isCompress : false
+        }))
+        .pipe(gulp.dest('src/css/'))
+        .pipe(connect.reload());
+});
 
 //编译@import js
 /*
@@ -188,14 +206,14 @@ gulp.task('clean', function (done) {
 //监控文件变化
 gulp.task('watch', function (done) {
     //监听所有文件，变化之后运行数组中的任务
-    gulp.watch('src/**/*', ['fileinclude', 'copy:images', 'gulpless','gulpsass', 'gulpimportcss', 'cssmin', 'build-js'])
+    gulp.watch('src/**/*', ['fileinclude', 'copy:images', 'copy:fonts', 'gulpless','gulpsass', 'importcss', 'cssmin', 'build-js'])
         .on('end', done)
 });
 
 //编排任务，避免每个任务需要单独运行
 // gulp.task('dev', ['connect', 'fileinclude', 'copy:images', 'gulpless', 'gulpsass', 'gulpimportcss', 'cssmin', 'build-js', 'watch', 'open']);
-gulp.task('build', sequence('fileinclude', 'copy:images', 'gulpless', 'gulpsass', 'gulpimportcss', 'cssmin', 'build-js'));
+gulp.task('build', sequence('fileinclude', 'copy:images', 'copy:fonts', 'gulpless', 'gulpsass', 'importcss', 'cssmin', 'build-js'));
 gulp.task('dev',['connect', 'open', 'watch']);
 
 //同步执行task测试
-gulp.task('sequence', sequence('gulpless', 'gulpsass', 'gulpimportcss', 'cssmin'));
+gulp.task('sequence', sequence('gulpless', 'gulpsass', 'importcss', 'cssmin'));
