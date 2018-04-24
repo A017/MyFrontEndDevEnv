@@ -187,7 +187,7 @@ gulp.task('connect', function (done) {
 });
 
 //自动打开浏览器
-gulp.task('open', ['connect'], function (done) {
+gulp.task('open', function (done) {
     gulp.src('')
         .pipe(gulpopen({
             app: browser,
@@ -210,9 +210,9 @@ gulp.task('watch', function (done) {
 });
 
 //编排任务，避免每个任务需要单独运行
-gulp.task('dev', ['fileinclude', 'copy:images', 'copy:fonts', 'cssmin', 'build-js', 'watch', 'open']);
-// gulp.task('build', sequence('fileinclude', 'copy:images', 'copy:fonts', 'gulpless', 'gulpsass', 'importcss', 'cssmin', 'build-js'));
-// gulp.task('dev',['watch', 'connect', 'open']);
+// gulp.task('build', ['fileinclude', 'copy:images', 'copy:fonts', 'cssmin', 'build-js']);
+gulp.task('build', sequence('fileinclude', 'copy:images', 'copy:fonts', 'cssmin', 'build-js'));
+gulp.task('dev',['watch', 'connect', 'open']);
 
 //同步执行task测试
 gulp.task('sequence', sequence('gulpless', 'gulpsass', 'importcss', 'cssmin'));
