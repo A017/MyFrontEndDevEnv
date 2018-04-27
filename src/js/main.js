@@ -3,6 +3,7 @@
  */
 
 import {animal} from './animal' ;
+import $ from 'jquery';
 
 $(function(){
     init() ;

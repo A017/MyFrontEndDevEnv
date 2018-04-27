@@ -21,6 +21,10 @@ module.exports = {
             exclude: /(node_modules)/,
             loader: 'babel-loader',
         },
+            {
+                test: require.resolve('zepto'),
+                loader: 'exports-loader?window.Zepto!script-loader'
+            }
         /*{
             test:/\.css$/,
             loader:'style-loader!css-loader'
