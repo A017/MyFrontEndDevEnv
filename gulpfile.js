@@ -20,6 +20,7 @@ const gulp = require('gulp'),
     imagemin = require('gulp-imagemin'),
     autoprefixer = require('gulp-autoprefixer'), //根据设置浏览器版本自动处理浏览器前缀
     sequence = require('gulp-sequence'), //用于同步执行task
+    cssClean = require('gulp-clean-css');
 
     webpack = require('webpack'),
     webpackConfig = require('./webpack.config.js'),
@@ -131,6 +132,14 @@ gulp.task('cssmin', ['importcss'], function (done) {
         .pipe(gulp.dest(cssDist))
         .pipe(connect.reload())
         // .on('end', done)
+});
+gulp.task('testCssmin', ['importcss'], function () {
+    return gulp.src(cssSrc)
+        .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
+        .pipe(rename({ suffix: '.min' }))
+        .pipe(cssClean())
+        .pipe(gulp.dest(cssDist))
+        .pipe(connect.reload())
 });
 
 //编译@import css
