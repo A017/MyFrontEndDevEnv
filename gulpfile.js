@@ -20,7 +20,7 @@ const gulp = require('gulp'),
     imagemin = require('gulp-imagemin'),
     autoprefixer = require('gulp-autoprefixer'), //根据设置浏览器版本自动处理浏览器前缀
     sequence = require('gulp-sequence'), //用于同步执行task
-    cssClean = require('gulp-clean-css');
+    cssClean = require('gulp-clean-css'),
 
     webpack = require('webpack'),
     webpackConfig = require('./webpack.config.js'),
