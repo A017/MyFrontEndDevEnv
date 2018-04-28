@@ -20,6 +20,9 @@ const gulp = require('gulp'),
     imagemin = require('gulp-imagemin'),
     autoprefixer = require('gulp-autoprefixer'), //根据设置浏览器版本自动处理浏览器前缀
     sequence = require('gulp-sequence'), //用于同步执行task
+    // 获取 uglify 模块（用于压缩 JS）
+    // uglify = require('gulp-uglify'),
+    // cssUglify = require('gulp-minify-css'),
     cssClean = require('gulp-clean-css'),
 
     webpack = require('webpack'),
@@ -45,7 +48,7 @@ const imagesSrc = 'src/images/**/*.{png,jpg,gif,ico}', imagesDist = 'dist/images
 const lessSrc = 'src/less/**/*.less';
 const scssSrc = 'src/scss/**/*.scss';
 const lessScssToCssSrc = 'src/css/';
-const cssSrc = 'src/css/**/*.css', cssDist = 'dist/css/';
+const cssSrc = 'src/css/cssim/*.css', cssDist = 'dist/css/';
 
 
 //合并HTML
@@ -61,12 +64,19 @@ gulp.task('fileinclude', function(done) {
         // .on('end', done);
 });
 
-//拷贝html
-gulp.task('copy:html', function (done) {
-    return gulp.src([htmlSrc])
-        .pipe(gulp.dest(htmlDist))
+//拷贝index.html
+gulp.task('copy:indexHtml', function (done) {
+    return gulp.src(['src/index.html'])
+        .pipe(gulp.dest('dist/'))
         .pipe(connect.reload())
         // .on('end', done);
+});
+//拷贝views-html
+gulp.task('copy:viewsHtml', function (done) {
+    return gulp.src(['src/views/*.html'])
+        .pipe(gulp.dest('dist/views/'))
+        .pipe(connect.reload())
+    // .on('end', done);
 });
 
 //拷贝fonts
@@ -124,14 +134,22 @@ gulp.task('gulpsass', function (done) {
 gulp.task('cssmin', ['importcss'], function (done) {
     return gulp.src([cssSrc])
         .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
-        .pipe(sourcemaps.init())
+        // .pipe(sourcemaps.init())
         .pipe(rename({ suffix: '.min' }))
         // .pipe(concat('style.min.css')) //生成一个压缩的css
         .pipe(cssmin())  //兼容IE7及以下需设置compatibility属性 .pipe(cssmin({compatibility: 'ie7'}))
-        .pipe(sourcemaps.write('../../../sourcemaps/cssminmaps/'))
+        // .pipe(sourcemaps.write('../../../sourcemaps/cssminmaps/'))
         .pipe(gulp.dest(cssDist))
         .pipe(connect.reload())
         // .on('end', done)
+});
+gulp.task('cssuglify', ['importcss'], function(){
+    return gulp.src(cssSrc)
+        .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
+        .pipe(rename({ suffix: '.min' }))
+        .pipe(cssUglify())
+        .pipe(gulp.dest(cssDist))
+        .pipe(connect.reload())
 });
 gulp.task('testCssmin', ['importcss'], function () {
     return gulp.src(cssSrc)
@@ -141,6 +159,16 @@ gulp.task('testCssmin', ['importcss'], function () {
         .pipe(gulp.dest(cssDist))
         .pipe(connect.reload())
 });
+
+//压缩js
+gulp.task('script', function() {
+    // 1. 找到文件
+    gulp.src('js/*.js')
+    // 2. 压缩文件
+        .pipe(uglify({ mangle: false }))
+        // 3. 另存压缩后的文件
+        .pipe(gulp.dest('dist/js'))
+})
 
 //编译@import css
 gulp.task('gulpimportcss', function (done) {
@@ -156,7 +184,7 @@ gulp.task('importcss', ['gulpless', 'gulpsass'], function () {
             rootPath : 'src',
             isCompress : false
         }))
-        .pipe(gulp.dest('src/css/'))
+        .pipe(gulp.dest('src/css/cssim/'))
         .pipe(connect.reload());
 });
 
@@ -207,7 +235,7 @@ gulp.task('open', function (done) {
 
 //清除
 gulp.task('clean', function (done) {
-    gulp.src(['dist', 'sourcemaps', 'src/sourcemaps', 'src/css/*.css'])
+    gulp.src(['dist', 'sourcemaps', 'src/sourcemaps', 'src/css/cssim/*.css'])
         .pipe(clean())
         .on('end', done)
 });
@@ -215,12 +243,20 @@ gulp.task('clean', function (done) {
 //监控文件变化
 gulp.task('watch', function (done) {
     //监听所有文件，变化之后运行数组中的任务
-    gulp.watch('src/**/*', ['fileinclude', 'copy:images', 'copy:fonts', 'cssmin', 'build-js'])
+    // gulp.watch('src/**/*', ['fileinclude', 'copy:images', 'copy:fonts', 'testCssmin', 'build-js']);
+    gulp.watch(incHtmlSrc, ['fileinclude']);
+    gulp.watch(imagesSrc, ['copy:images']);
+    gulp.watch('src/css/fonts/*', ['copy:fonts']);
+    gulp.watch(lessSrc, ['testCssmin']);
+    gulp.watch(scssSrc, ['testCssmin']);
+    gulp.watch('src/css/*.css', ['testCssmin']);
+    gulp.watch(cssSrc, ['testCssmin']);
+    gulp.watch('src/js/**/*.js', ['build-js']);
 });
 
 //编排任务，避免每个任务需要单独运行
 // gulp.task('build', ['fileinclude', 'copy:images', 'copy:fonts', 'cssmin', 'build-js']);
-gulp.task('build', sequence('fileinclude', 'copy:images', 'copy:fonts', 'cssmin', 'build-js'));
+gulp.task('build', sequence('fileinclude', 'copy:images', 'copy:fonts', 'testCssmin', 'build-js'));
 gulp.task('dev',['watch', 'connect', 'open']);
 
 //同步执行task测试
