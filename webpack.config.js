@@ -21,14 +21,23 @@ module.exports = {
             exclude: /(node_modules)/,
             loader: 'babel-loader',
         },
-            {
-                test: require.resolve('zepto'),
-                loader: 'exports-loader?window.Zepto!script-loader'
-            }
-        /*{
+        {
+            test: require.resolve('zepto'),
+            loader: 'exports-loader?window.Zepto!script-loader'
+        },
+        {
             test:/\.css$/,
+            exclude: /(node_modules)/,
             loader:'style-loader!css-loader'
-        }*/]
+            /*use:[
+                {
+                    loader:'style-loader'
+                },
+                {
+                    loader:'css-loader'
+                }
+            ]*/
+        }]
     },
 
     plugins: [

@@ -4,6 +4,7 @@
 
 import {animal} from './animal' ;
 import $ from 'jquery';
+import '../css/importCss.css'
 
 $(function(){
     init() ;
