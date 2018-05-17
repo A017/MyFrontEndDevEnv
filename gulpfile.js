@@ -190,14 +190,14 @@ gulp.task('compile-css', function*() {
      .pipe(gulp.dest(lessScssToCssSrc));*/
 
     /*编译less*/
-    yield gulp.src(lessSrc,  { base: "./" })
+    yield gulp.src(lessSrc,  { base: "" })
         .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')}))
         .pipe(gulpless())
         .pipe(gulp.dest(lessScssToCssSrc));
 
     /*加载额外css@import url("css")*/
-    yield gulp.src(['src/css/*.css'],  { base: "./" })
+    yield gulp.src(['src/css/*.css'],  { base: "" })
         .pipe (importcss ({
             rootPath : 'src',
             isCompress : false
@@ -205,12 +205,12 @@ gulp.task('compile-css', function*() {
         .pipe(gulp.dest('src/css/cssim/'));
 
     /*压缩或者合并最后的css*/
-    yield gulp.src(cssSrc,  { base: "./" })
+    yield gulp.src(cssSrc,  { base: "" })
         .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
         .pipe(sourcemaps.init())
         .pipe(rename({ suffix: '.min' }))
         .pipe(cssClean())
-        .pipe(sourcemaps.write('dist/css/cssminmaps/'))
+        .pipe(sourcemaps.write('css/cssminmaps/'))
         .pipe(gulp.dest(cssDist))
         .pipe(connect.reload())
 });
@@ -248,16 +248,16 @@ gulp.task('min-script', function() {
         .pipe(gulp.dest('dist/js'))
 });
 
-//compile-js
+//compile-js { base: "./" }(根目录)
 gulp.task('compile-js', function*() {
     /*编译js*/
-    yield gulp.src('src/entry.js')
+    yield gulp.src('src/entry.js',  { base: "" })
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')}))
         .pipe(webpackStream(webpackConfig))
         .pipe(gulp.dest('dist/js'));
 
     /*压缩js*/
-    yield gulp.src('dist/js/**/*.js')
+    yield gulp.src('dist/js/**/*.js',  { base: "" })
         .pipe(uglify({ mangle: false }))
         .pipe(rename({ suffix: '.min' }))
         .pipe(gulp.dest('dist/js'))
