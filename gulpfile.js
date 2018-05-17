@@ -257,7 +257,7 @@ gulp.task('compile-js', function*() {
         .pipe(gulp.dest('dist/js'));
 
     /*压缩js*/
-    yield gulp.src('dist/js/**/*.js',  { base: "" })
+    yield gulp.src('dist/js/entry.js',  { base: "" })
         .pipe(uglify({ mangle: false }))
         .pipe(rename({ suffix: '.min' }))
         .pipe(gulp.dest('dist/js'))
