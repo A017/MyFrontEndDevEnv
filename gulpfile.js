@@ -190,14 +190,14 @@ gulp.task('compile-css', function*() {
      .pipe(gulp.dest(lessScssToCssSrc));*/
 
     /*编译less*/
-    yield gulp.src(lessSrc,  { base: "" })
+   /* yield gulp.src(lessSrc,  { base: "" })
         .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
         .pipe(sourcemaps.init())
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')}))
         .pipe(gulpless())
         .pipe(sourcemaps.write('', {addComment: true}))
         // .pipe(gulp.dest(lessScssToCssSrc));
-        .pipe(gulp.dest('dist/css/'));
+        .pipe(gulp.dest('dist/css/'));*/
 
     /*加载额外css@import url("css")*/
     /*yield gulp.src(['dist/css/!*.css'],  { base: "" })
@@ -218,6 +218,20 @@ gulp.task('compile-css', function*() {
         .pipe(sourcemaps.write('', {addComment: true}))
         .pipe(gulp.dest(cssDist))
         .pipe(connect.reload())*/
+
+    yield gulp.src(lessSrc,  { base: "" })
+        .pipe(sourcemaps.init())
+        .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
+        .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')}))
+        .pipe(gulpless())
+        .pipe (importcss ({
+            rootPath : 'dist',
+            isCompress : false
+        }))
+        .pipe(cssClean())
+        .pipe(rename({ suffix: '.min' }))
+        .pipe(sourcemaps.write('', {addComment: true}))
+        .pipe(gulp.dest(cssDist));
 });
 
 //编译@import js
