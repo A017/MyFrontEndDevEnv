@@ -31,7 +31,7 @@
     "gulp-autoprefixer": "^5.0.0",
     "gulp-awaitable-tasks": "^1.0.0",
     "gulp-clean": "^0.4.0",
-    "gulp-clean-css": "^3.9.4",
+    "gulp-clean-css": "^3.9.3",
     "gulp-concat": "^2.6.1",
     "gulp-concat-css-import": "^1.0.5",
     "gulp-connect": "^5.5.0",
@@ -53,7 +53,6 @@
     "os": "^0.1.1",
     "script-loader": "^0.7.2",
     "style-loader": "^0.21.0",
-    "vue": "^2.5.16",
     "webpack": "^4.6.0",
     "webpack-cli": "^2.0.14",
     "webpack-stream": "^4.0.3"
@@ -64,6 +63,8 @@
   "homepage": "https://github.com/A017/MyFrontEndDevEnv#readme",
   "dependencies": {
     "jquery": "^3.3.1",
+    "mui": "0.0.1",
+    "vue": "^2.5.16",
     "zepto": "^1.2.0"
   }
 }

@@ -3,7 +3,7 @@
  */
 
 import {animal} from './animal' ;
-import $ from 'jquery';
+import $ from 'zepto';
 import '../css/importCss.css'
 
 $(function(){

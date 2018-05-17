@@ -40,7 +40,7 @@ const browser = os.platform() === 'linux' ? 'google-chrome' : (
                     os.platform() === 'win32' ? 'chrome' : 'firefox'));
 const host = {
     path: 'dist/', //dist部署的文件根路径
-    port: 3090,
+    port: 4000,
     html: 'index.html'
 };
 
@@ -61,7 +61,7 @@ gulp.task('fileinclude', function(done) {
             basepath: '@file' //文件所在地额地方
         }))
         .pipe(gulp.dest(incHtmlDist))
-        .pipe(notify({ message: 'html task complete' }))
+        // .pipe(notify({ message: 'html task complete' }))
         .pipe(connect.reload())
         // .on('end', done);
 });
@@ -192,27 +192,32 @@ gulp.task('compile-css', function*() {
     /*编译less*/
     yield gulp.src(lessSrc,  { base: "" })
         .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
+        .pipe(sourcemaps.init())
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')}))
         .pipe(gulpless())
-        .pipe(gulp.dest(lessScssToCssSrc));
+        .pipe(sourcemaps.write('', {addComment: true}))
+        // .pipe(gulp.dest(lessScssToCssSrc));
+        .pipe(gulp.dest('dist/css/'));
 
     /*加载额外css@import url("css")*/
-    yield gulp.src(['src/css/*.css'],  { base: "" })
+    /*yield gulp.src(['dist/css/!*.css'],  { base: "" })
+        .pipe(sourcemaps.init())
         .pipe (importcss ({
-            rootPath : 'src',
+            rootPath : 'dist',
             isCompress : false
         }))
-        .pipe(gulp.dest('src/css/cssim/'));
+        .pipe(sourcemaps.write('', {addComment: true}))
+        .pipe(gulp.dest('dist/css/'));*/
 
     /*压缩或者合并最后的css*/
-    yield gulp.src(cssSrc,  { base: "" })
+    /*yield gulp.src(['dist/css/!*.css'],  { base: "" })
         .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
         .pipe(sourcemaps.init())
         .pipe(rename({ suffix: '.min' }))
         .pipe(cssClean())
-        .pipe(sourcemaps.write('css/cssminmaps/'))
+        .pipe(sourcemaps.write('', {addComment: true}))
         .pipe(gulp.dest(cssDist))
-        .pipe(connect.reload())
+        .pipe(connect.reload())*/
 });
 
 //编译@import js
@@ -257,7 +262,7 @@ gulp.task('compile-js', function*() {
         .pipe(gulp.dest('dist/js'));
 
     /*压缩js*/
-    yield gulp.src('dist/js/entry.js',  { base: "" })
+    yield gulp.src(['dist/js/mian.js', 'dist/js/index.js'],  { base: "" })
         .pipe(uglify({ mangle: false }))
         .pipe(rename({ suffix: '.min' }))
         .pipe(gulp.dest('dist/js'))
