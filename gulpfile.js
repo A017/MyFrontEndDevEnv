@@ -172,7 +172,7 @@ gulp.task('min-css', function () {
         .pipe(gulp.dest(cssDist))
 });
 
-//编译@import css
+//编译@import css-- @import url('');
 /*gulp.task('gulpimportcss', function (done) {
     return gulp.src(['src/css/!*.css'])
         .pipe(gulpimportcss())
@@ -273,7 +273,7 @@ gulp.task('build-js', function (done) {
 gulp.task('min-script', function() {
     gulp.src('dist/js/**/*.js')
         .pipe(uglify({ mangle: false })) //mangle 是否修改变量名
-    // .pipe(rename({ suffix: '.min' }))
+        // .pipe(rename({ suffix: '.min' }))
         .pipe(gulp.dest('dist/js'))
 });
 
@@ -297,7 +297,6 @@ gulp.task('compile-js', function*() {
     yield gulp.src('src/entry.js',  { base: "" })
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')}))
         .pipe(webpackStream(webpackConfig))
-        .pipe(rename({ suffix: '.min' }))
         .pipe(gulp.dest('dist/js'))
         .pipe(connect.reload());
 });

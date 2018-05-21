@@ -11,7 +11,7 @@ module.exports = {
     },
     output: {
         path: __dirname+'/dist/js',
-        filename: '[name].js'
+        filename: '[name].min.js'
     },
     devtool:'source-map',
     // mode:'development', //这个参数有两个值： 'development'或者 'production'，一个是开发环境，一个是生产环境。
