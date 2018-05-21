@@ -274,25 +274,32 @@ gulp.task('min-script', function() {
     gulp.src('dist/js/**/*.js')
         .pipe(uglify({ mangle: false })) //mangle 是否修改变量名
     // .pipe(rename({ suffix: '.min' }))
-    .pipe(gulp.dest('dist/js'))
+        .pipe(gulp.dest('dist/js'))
 });
 
 //compile-js { base: "./" }(根目录)
 gulp.task('compile-js', function*() {
     /*编译js*/
-    yield gulp.src('src/entry.js',  { base: "" })
+   /* yield gulp.src('src/entry.js',  { base: "" })
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')}))
         .pipe(webpackStream(webpackConfig))
-        .pipe(gulp.dest('dist/js'));
+        .pipe(gulp.dest('dist/js'));*/
 
     /*压缩js*/
-    yield gulp.src(['dist/js/app.js'],  { base: "" })
+   /* yield gulp.src(['dist/js/app.js'],  { base: "" })
         .pipe(sourcemaps.init())
-        // .pipe(uglify({ mangle: false })) //mangle 是否修改变量名
+        .pipe(uglify({ mangle: false })) //mangle 是否修改变量名
         .pipe(rename({ suffix: '.min' }))
         .pipe(sourcemaps.write('', {addComment: true}))
         .pipe(gulp.dest('dist/js'))
-        .pipe(connect.reload())
+        .pipe(connect.reload())*/
+
+    yield gulp.src('src/entry.js',  { base: "" })
+        .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')}))
+        .pipe(webpackStream(webpackConfig))
+        .pipe(rename({ suffix: '.min' }))
+        .pipe(gulp.dest('dist/js'))
+        .pipe(connect.reload());
 });
 
 //运行web服务器
