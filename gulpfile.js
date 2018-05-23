@@ -232,10 +232,10 @@ gulp.task('compile-css', function*() {
         .pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
         .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')}))
         .pipe(gulpless())
-        .pipe (importcss ({
+        /*.pipe (importcss ({
             rootPath : 'dist',
             isCompress : false
-        }))
+        }))*/
         // .pipe(cssClean())
         .pipe(rename({ suffix: '.min' }))
         .pipe(sourcemaps.write('', {addComment: true}))
