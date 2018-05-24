@@ -24,6 +24,9 @@ const gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     // cssUglify = require('gulp-minify-css'),
     cssClean = require('gulp-clean-css'),
+    // runSequence = require('run-sequence'),
+    rev = require('gulp-rev'),
+    revCollector = require('gulp-rev-collector'),
 
     webpack = require('webpack'),
     webpackConfig = require('./webpack.config.js'),
@@ -56,6 +59,10 @@ const lessSrc = 'src/less/**/*.less';
 const scssSrc = 'src/scss/**/*.scss';
 const lessScssToCssSrc = 'src/css/';
 const cssSrc = 'src/css/cssim/*.css', cssDist = 'dist/css/';
+
+//定义需要添加版本号的css、js文件路径
+const cssRevSrc = 'dist/css/**/*.css';
+const jsRevSrc = 'dist/js/**/*.js';
 
 
 //合并HTML
@@ -238,8 +245,11 @@ gulp.task('compile-css', function*() {
         }))*/
         // .pipe(cssClean())
         .pipe(rename({ suffix: '.min' }))
+       /* .pipe(rev()) //输出后的文件就会生成hash码*/
         .pipe(sourcemaps.write('', {addComment: true}))
         .pipe(gulp.dest(cssDist))
+        /*.pipe(rev.manifest()) //set hash key json
+        .pipe(gulp.dest('rev/css/'))  //dest hash key json*/
         .pipe(connect.reload());
 });
 
@@ -299,6 +309,30 @@ gulp.task('compile-js', function*() {
         .pipe(webpackStream(webpackConfig))
         .pipe(gulp.dest('dist/js'))
         .pipe(connect.reload());
+});
+
+//CSS生成文件hash编码并生成 rev-manifest.json文件名对照映射
+gulp.task('revCss', function(){
+    gulp.src(cssRevSrc)
+        .pipe(rev())
+        .pipe(rev.manifest())
+        .pipe(gulp.dest('rev/css/'));
+});
+
+
+//js生成文件hash编码并生成 rev-manifest.json文件名对照映射
+gulp.task('revJs', function(){
+    gulp.src(jsRevSrc)
+        .pipe(rev())
+        .pipe(rev.manifest())
+        .pipe(gulp.dest('rev/js/'));
+});
+
+//Html替换css、js文件版本
+gulp.task('revHtml', function () {
+    gulp.src(['rev/**/*.json', 'dist/**/*.html'])
+        .pipe(revCollector())
+        .pipe(gulp.dest('dist/'));
 });
 
 //运行web服务器
